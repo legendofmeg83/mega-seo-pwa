@@ -64,7 +64,8 @@ const password = "MegWillXP";
 const userInput = prompt("Mot de passe pour accéder à Mega SEO Tool :");
 
 if (userInput !== password) {
-document.body.innerHTML = "<h1>Accès refusé</h1>";
+  document.body.innerHTML = "<h1>Accès refusé</h1>";
+  throw new Error("Accès bloqué");
 }
 </script>
 <div class="container">
