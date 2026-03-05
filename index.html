@@ -1,480 +1,613 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meg Studio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Meg Studio</title>
 
-<style>
-body{
-font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
-background:linear-gradient(180deg,#0b1220,#0f172a);
-color:white;
-margin:0;
-padding:40px;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
+  <style>
+    :root{
+      --bg:#0b1220;
+      --bg2:#0f172a;
+      --card:rgba(18,26,42,.88);
+      --border:rgba(255,255,255,.08);
+      --text:#eaf0ff;
+      --muted:#a8b5d6;
+      --input:#121a2a;
+      --btn:#4f7cff;
+      --btn2:#22304f;
+      --danger:#ff5c5c;
+      --ok:#8dffb0;
+      --radius:16px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+      color:var(--text);
+      background:linear-gradient(180deg,var(--bg),var(--bg2));
+      min-height:100vh;
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:18px; }
+    header{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      padding:18px 18px 6px;
+    }
+    header h1{ margin:0; font-size:22px; letter-spacing:.2px; }
+    header .sub{ color:var(--muted); font-size:13px; margin-top:6px; }
+    .pill{
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--muted);
+      font-size:12px;
+      background:rgba(0,0,0,.18);
+      backdrop-filter:blur(10px);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      padding:0 18px 18px;
+    }
+    @media(max-width:980px){ .grid{ grid-template-columns:1fr; } }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px;
+      backdrop-filter:blur(12px);
+      box-shadow:0 18px 60px rgba(0,0,0,.35);
+    }
+    .card h2{ margin:0 0 10px; font-size:16px; }
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin:10px 0 6px;
+    }
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    textarea{ resize:vertical; min-height:110px; }
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media(max-width:520px){ .row{ grid-template-columns:1fr; } }
 
-#login{
-background:rgba(20,30,50,0.8);
-backdrop-filter:blur(12px);
-padding:40px;
-border-radius:18px;
-max-width:420px;
-width:100%;
-box-shadow:0 20px 60px rgba(0,0,0,0.6);
-}
+    .btnline{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    button, .aBtn{
+      border:0;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      color:#fff;
+      background:var(--btn2);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    button.primary{
+      background:var(--btn);
+      width:100%;
+      justify-content:center;
+      padding:12px 12px;
+      font-size:15px;
+    }
+    button:hover, .aBtn:hover{ filter:brightness(1.06); }
+    .box{
+      background:rgba(0,0,0,.22);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px;
+    }
+    pre{
+      margin:0;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:13px;
+      line-height:1.35;
+    }
+    .note{ color:var(--muted); font-size:13px; margin-top:10px; }
+    .toast{
+      display:none;
+      margin-top:10px;
+      color:var(--ok);
+      font-weight:800;
+    }
+    .danger{
+      color:var(--danger);
+      font-weight:800;
+      font-size:13px;
+      margin-top:8px;
+      display:none;
+    }
 
-input, select, textarea{
-  width:100%;
-  padding:14px;
-  border-radius:10px;
-  border:none;
-  margin-top:10px;
-  margin-bottom:20px;
-  background:#1f2a44;
-  color:white;
-}
-
-button{
-background:#4f7cff;
-border:none;
-padding:12px 20px;
-border-radius:10px;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
-button:hover{
-background:#6b8cff;
-}
-margin:0;
-padding:20px;
-}
-
-.card{
-background:#121a2a;
-padding:20px;
-border-radius:10px;
-margin-bottom:20px;
-}
-
-input,select,textarea{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:10px;
-border-radius:6px;
-border:none;
-background:#1e2742;
-color:white;
-}
-
-button{
-background:#4d7cff;
-border:none;
-padding:10px 15px;
-border-radius:8px;
-cursor:pointer;
-color:white;
-font-weight:bold;
-margin-top:5px;
-}
-
-button.secondary{
-background:#22304f;
-}
-
-pre{
-background:#1e2742;
-padding:10px;
-border-radius:8px;
-white-space:pre-wrap;
-}
-
-#login{
-max-width:400px;
-margin:auto;
-margin-top:100px;
-}
-
-#app{
-display:none;
-}
-</style>
-
+    /* Login */
+    #loginWrap{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:18px;
+    }
+    #login{
+      width:min(520px,100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 18px 60px rgba(0,0,0,.45);
+      backdrop-filter:blur(12px);
+    }
+    #login h2{ margin:0 0 6px; }
+    #app{ display:none; }
+  </style>
 </head>
 
 <body>
 
-<div id="login" class="card">
-
-<h2>🔒 Accès Meg Studio</h2>
-
-<input type="password" id="pwd" placeholder="Mot de passe">
-
-<button onclick="checkPwd()">Entrer</button>
-
-</div>
-
-<div id="app">
-
-<div class="card">
-
-<h2>🎮 Infos vidéo</h2>
-
-<label>Chaîne</label>
-<select id="channel">
-<option value="meg">TheLegendOf_Meg</option>
-<option value="will">WillXP83</option>
-</select>
-
-<label>Jeu</label>
-<input id="game" placeholder="Ex : Syberia Remastered">
-
-<label>Episode</label>
-<input id="episode">
-
-<label>Objectif</label>
-<input id="goal">
-
-<label>Mots clés</label>
-<input id="keywords">
-
-<button onclick="generate()">🚀 Générer</button>
-
-</div>
-
-<div class="card">
-
-<h3>Prompt IA</h3>
-
-<button class="secondary" onclick="copyPrompt()">📋 Copier prompt</button>
-
-<button class="secondary" onclick="copyOpenChatGPT()">🤖 Copier + ouvrir ChatGPT</button>
-
-<pre id="prompt"></pre>
-
-</div>
-
-<div class="card">
-
-<h3>Titres</h3>
-
-<button class="secondary" onclick="copyTitles()">📋 Copier titres</button>
-
-<pre id="titles"></pre>
-
-</div>
-
-<div class="card">
-
-<h3>Description</h3>
-
-<button class="secondary" onclick="copyDescription()">📋 Copier description</button>
-
-<pre id="description"></pre>
-
-</div>
-
-<div class="card">
-
-<h3>Tags</h3>
-
-<button class="secondary" onclick="copyTags()">📋 Copier tags</button>
-
-<pre id="tags"></pre>
-
-</div>
-
-<div class="card">
-
-<h3>Tags ≤ 500 caractères</h3>
-
-<pre id="tags500"></pre>
-
-</div>
-
-<div class="card">
-
-<h3>Pack Shorts / TikTok</h3>
-
-<pre id="shorts"></pre>
-
-</div>
-
-</div>
-
-<script>
-
-function checkPwd(){
-
-const password="MegWillXP"
-
-if(document.getElementById("pwd").value===password){
-
-document.getElementById("login").style.display="none"
-document.getElementById("app").style.display="block"
-
-}else{
-
-alert("Mot de passe incorrect")
-
-}
-
-}
-
-function generate(){
-
-let game=document.getElementById("game").value
-let episode=document.getElementById("episode").value
-let goal=document.getElementById("goal").value
-let keywords=document.getElementById("keywords").value
-let channel=document.getElementById("channel").value
-
-let titles=
-game+" Gameplay FR\n"+
-game+" Let's Play Episode "+episode+"\n"+
-goal+" | "+game+"\n"+
-game+" Walkthrough FR\n"+
-game+" Episode "+episode
-
-let desc=
-"🎮 "+game+" épisode "+episode+"\n\n"+
-goal+"\n\n"+
-"Abonne toi pour la suite."
-
-let tags=
-game+", gameplay fr, walkthrough, let's play, "+keywords
-
-let tags500=tags.substring(0,500)
-
-let shorts=
-game+" "+goal+"\n\n#gaming #shorts #gameplay"
-
-let prompt=
-"Crée un pack SEO YouTube.\n\n"+
-"Jeu : "+game+"\n"+
-"Episode : "+episode+"\n"+
-"Objectif : "+goal+"\n"+
-"Chaîne : "+channel+"\n"+
-"Mots clés : "+keywords+"\n\n"+
-"Génère :\n"+
-"- titres SEO\n"+
-"- description optimisée\n"+
-"- tags\n"+
-"- hashtags\n"+
-"- commentaire épinglé"
-
-document.getElementById("titles").textContent=titles
-document.getElementById("description").textContent=desc
-document.getElementById("tags").textContent=tags
-document.getElementById("tags500").textContent=tags500
-document.getElementById("shorts").textContent=shorts
-document.getElementById("prompt").textContent=prompt
-
-}
-
-function copyPrompt(){
-navigator.clipboard.writeText(document.getElementById("prompt").textContent)
-}
-
-function copyTitles(){
-navigator.clipboard.writeText(document.getElementById("titles").textContent)
-}
-
-function copyDescription(){
-navigator.clipboard.writeText(document.getElementById("description").textContent)
-}
-
-function copyTags(){
-navigator.clipboard.writeText(document.getElementById("tags").textContent)
-}
-
-function copyOpenChatGPT(){
-
-copyPrompt()
-
-window.open("https://chatgpt.com","_blank")
-
-}
-<script>
-// ====== V3: Profils + Presets + Copier + Tags<=500 + Sauvegarde ======
-
-const PROFILES = {
-  "TheLegendOf_Meg": {
-    displayName: "TheLegendOf_Meg",
-    socials: [
-      "YouTube / Twitch / TikTok / Instagram : TheLegendOf_Meg"
-    ],
-    cta: "Si la vidéo te plaît, abonne-toi et laisse un petit 👍 (ça aide énormément 💙).",
-    vibe: "Chill"
-  },
-  "WillXP": {
-    displayName: "WillXP",
-    socials: [
-      "Twitch : willxp83",
-      "TikTok : willxp91",
-      "Facebook : WillXP"
-    ],
-    cta: "Si ça t’a plu, abonne-toi pour la suite et dis-moi ce que tu ferais à ma place 👇",
-    vibe: "Narratif"
-  }
-};
-
-const PRESETS = {
-  "Let's Play (chill)": {
-    titleStyle: "Accroche",
-    hashtags: ["#gaming", "#letsplay", "#gameplay", "#walkthrough", "#francais", "#narration"],
-    chapters: ["Intro", "Début gameplay", "Exploration", "Moment clé", "Fin"]
-  },
-  "Soluce Sanctuaire (BOTW/TOTK)": {
-    titleStyle: "SEO safe",
-    hashtags: ["#zelda", "#botw", "#totk", "#sanctuaire", "#soluce", "#walkthrough"],
-    chapters: ["Départ", "Mécanique", "Solution", "Coffre", "Sortie"]
-  },
-  "Boss Fight": {
-    titleStyle: "Accroche",
-    hashtags: ["#bossfight", "#gaming", "#walkthrough", "#gameplay", "#fr"],
-    chapters: ["Setup", "Phase 1", "Phase 2", "Finish"]
-  }
-};
-
-// ---- Helpers
-function $(id){ return document.getElementById(id); }
-
-function cleanLines(s){
-  return (s || "").split("\n").map(l=>l.trim()).filter(Boolean).join("\n");
-}
-
-function uniq(arr){
-  return Array.from(new Set(arr.map(x=>x.trim()).filter(Boolean)));
-}
-
-function splitKeywords(raw){
-  if(!raw) return [];
-  // accepte virgules OU lignes
-  return raw
-    .split(/[\n,]/g)
-    .map(x=>x.trim())
-    .filter(Boolean);
-}
-
-function toTagList(tags){
-  return uniq(tags).join(", ");
-}
-
-function clamp500(str){
-  if(str.length <= 500) return str;
-  // coupe proprement au dernier ", "
-  let cut = str.slice(0, 500);
-  const lastComma = cut.lastIndexOf(", ");
-  if(lastComma > 50) cut = cut.slice(0, lastComma);
-  return cut;
-}
-
-function copyText(text){
-  navigator.clipboard.writeText(text);
-}
-
-// ---- UI wiring (ajoute ces IDs dans ton HTML si pas déjà)
-function ensureV3Ui(){
-  // Tags counters
-  if($("tags500Count")) return; // déjà
-  const tagsBox = $("tags");
-  if(!tagsBox) return;
-
-  const info = document.createElement("div");
-  info.style.opacity = "0.8";
-  info.style.marginTop = "-10px";
-  info.style.marginBottom = "20px";
-  info.innerHTML = `
-    <div>Tags ≤ 500 : <span id="tags500Count">0</span> caractères</div>
-  `;
-  tagsBox.parentElement.appendChild(info);
-
-  const btnRow = document.createElement("div");
-  btnRow.style.display = "flex";
-  btnRow.style.gap = "10px";
-  btnRow.style.flexWrap = "wrap";
-  btnRow.style.marginTop = "10px";
-  btnRow.innerHTML = `
-    <button id="copyTitlesBtn" type="button">Copier Titres</button>
-    <button id="copyDescBtn" type="button">Copier Description</button>
-    <button id="copyTagsBtn" type="button">Copier Tags</button>
-    <button id="copyHashBtn" type="button">Copier Hashtags</button>
-  `;
-  tagsBox.parentElement.appendChild(btnRow);
-
-  $("copyTitlesBtn").onclick = () => copyText($("titles").textContent || "");
-  $("copyDescBtn").onclick   = () => copyText($("description").textContent || "");
-  $("copyTagsBtn").onclick   = () => copyText($("tags").textContent || "");
-  $("copyHashBtn").onclick   = () => copyText($("hashtagsOut")?.textContent || "");
-}
-
-// ---- Save/Load (localStorage)
-function saveForm(){
-  const data = {
-    channel: $("channel")?.value || "",
-    preset: $("preset")?.value || "",
-    game: $("game")?.value || "",
-    episode: $("episode")?.value || "",
-    goal: $("goal")?.value || "",
-    keywords: $("keywords")?.value || "",
-    playlist: $("playlist")?.value || ""
-  };
-  localStorage.setItem("megStudioForm", JSON.stringify(data));
-}
-
-function loadForm(){
-  const raw = localStorage.getItem("megStudioForm");
-  if(!raw) return;
-  try{
-    const data = JSON.parse(raw);
-    if($("channel")) $("channel").value = data.channel || $("channel").value;
-    if($("preset")) $("preset").value = data.preset || $("preset").value;
-    if($("game")) $("game").value = data.game || "";
-    if($("episode")) $("episode").value = data.episode || "";
-    if($("goal")) $("goal").value = data.goal || "";
-    if($("keywords")) $("keywords").value = data.keywords || "";
-    if($("playlist")) $("playlist").value = data.playlist || "";
-  }catch(e){}
-}
-
-// ---- Main generate
-function generateV3(){
-  const channel = $("channel").value;
-  const presetKey = $("preset")?.value || "Let's Play (chill)";
-  const preset = PRESETS[presetKey] || PRESETS["Let's Play (chill)"];
-
-  const profile = PROFILES[channel] || PROFILES["TheLegendOf_Meg"];
-
-  const game = ($("game").value || "").trim();
-  const episode = ($("episode").value || "").trim();
-  const goal = ($("goal").value || "").trim();
-  const playlist = ($("playlist")?.value || "").trim();
-
-  const kws = splitKeywords($("keywords")?.value || "");
-
-  // ---- TITLES (simple mais efficaces sans IA)
-  const base = game ? game : "Jeu";
-  const epTxt = episode ? `Épisode ${episode}` : "Épisode";
-  const goalTxt = goal ? goal : "moment clé";
-
-  const titles = [
-    `${base} – ${epTxt} | ${goalTxt}`,
-    `${base} FR – ${epTxt} | Walkthrough`,
-    `${goalTxt}… on tente tout (${base})`,
-    `Ça bascule ici… ${base} | ${epTxt}`,
-    `${base} | ${goalTxt} (FR)`,
-    `${base} – ${epTxt} (chill)`,
-    `${base} – ${goalTxt}`,
-    `${base} FR | ${epTxt}`
-    
-</script>
+  <!-- LOGIN -->
+  <div id="loginWrap">
+    <div id="login">
+      <h2>🔒 Accès Meg Studio</h2>
+      <div class="sub" style="color:var(--muted);font-size:13px;margin-bottom:12px;">
+        Outil perso pour <b>TheLegendOf_Meg</b> & <b>WillXP83</b>
+      </div>
+
+      <label>Mot de passe</label>
+      <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="current-password" />
+
+      <button class="primary" type="button" onclick="checkPwd()">Entrer</button>
+      <div class="danger" id="loginErr">Mot de passe incorrect.</div>
+      <div class="note">Astuce : touche <b>Entrée</b> pour valider.</div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app">
+    <header>
+      <div>
+        <h1>✨ Meg Studio</h1>
+        <div class="sub">Génère un prompt IA PRO + base titres/description/tags. IA via ChatGPT (copier/coller).</div>
+      </div>
+      <div class="pill" id="pill">Mode : SEO YouTube</div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="card">
+        <h2>1) Infos vidéo</h2>
+
+        <div class="row">
+          <div>
+            <label>Chaîne</label>
+            <select id="channel">
+              <option value="meg">TheLegendOf_Meg</option>
+              <option value="will">WillXP83</option>
+            </select>
+          </div>
+          <div>
+            <label>Preset</label>
+            <select id="preset" onchange="applyPreset()">
+              <option value="letsplay">Let’s Play (général)</option>
+              <option value="syberia">Syberia (narratif)</option>
+              <option value="soluce">Soluce / Guide</option>
+              <option value="boss">Boss fight</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Jeu</label>
+            <input id="game" placeholder="ex : Syberia Remastered / Zelda BOTW / etc" />
+          </div>
+          <div>
+            <label>Épisode (optionnel)</label>
+            <input id="episode" placeholder="ex : 4" />
+          </div>
+        </div>
+
+        <label>Objectif / moment clé</label>
+        <input id="goal" placeholder="ex : sauver Helena / solution d’un passage / boss phase 2..." />
+
+        <label>Mots-clés bonus (virgules ou lignes)</label>
+        <textarea id="keywords" placeholder="ex : walkthrough fr, gameplay fr, soluce, narration..." ></textarea>
+
+        <label>Chapitres (optionnel) — si vide, je propose une structure</label>
+        <textarea id="chapters" placeholder="00:00 Intro&#10;01:12 Début gameplay&#10;..."></textarea>
+
+        <div class="row">
+          <div>
+            <label>Lien playlist (optionnel)</label>
+            <input id="playlist" placeholder="ex : https://www.youtube.com/playlist?list=..." />
+          </div>
+          <div>
+            <label>Durée (optionnel)</label>
+            <input id="duration" placeholder="ex : 35 min" />
+          </div>
+        </div>
+
+        <button class="primary" type="button" onclick="generateAll()">🚀 Générer</button>
+        <div class="toast" id="toast">Copié ✅</div>
+        <div class="note">Ton copain peut l’utiliser aussi : il copie le prompt et le colle dans ChatGPT (compte gratuit ok).</div>
+      </section>
+
+      <!-- RIGHT -->
+      <section class="card">
+        <h2>2) Sorties</h2>
+
+        <div class="btnline">
+          <button type="button" onclick="copyId('promptOut')">📋 Copier prompt IA</button>
+
+          <!-- iOS/PWA friendly: lien cliquable -->
+          <a class="aBtn" href="https://chatgpt.com/" onclick="copyId('promptOut')" rel="noopener">
+            🤖 Copier + ouvrir ChatGPT
+          </a>
+
+          <button type="button" onclick="copyId('titlesOut')">📋 Copier titres</button>
+          <button type="button" onclick="copyId('descOut')">📋 Copier description</button>
+          <button type="button" onclick="copyId('tagsOut')">📋 Copier tags</button>
+          <button type="button" onclick="copyId('hashtagsOut')">📋 Copier hashtags</button>
+        </div>
+
+        <label>Prompt IA PRO</label>
+        <div class="box"><pre id="promptOut"></pre></div>
+
+        <label style="margin-top:12px;">Titres (base)</label>
+        <div class="box"><pre id="titlesOut"></pre></div>
+
+        <label style="margin-top:12px;">Description (base)</label>
+        <div class="box"><pre id="descOut"></pre></div>
+
+        <label style="margin-top:12px;">Tags (base)</label>
+        <div class="box"><pre id="tagsOut"></pre></div>
+
+        <label style="margin-top:12px;">Tags ≤ 500 caractères</label>
+        <div class="box"><pre id="tags500Out"></pre></div>
+
+        <label style="margin-top:12px;">Hashtags</label>
+        <div class="box"><pre id="hashtagsOut"></pre></div>
+
+        <label style="margin-top:12px;">Pack Shorts / TikTok</label>
+        <div class="box"><pre id="shortsOut"></pre></div>
+
+        <div class="note">
+          Workflow : <b>Générer</b> → <b>Copier prompt IA</b> → coller dans ChatGPT → récupérer la version ULTRA PRO.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    /* ===== LOGIN ===== */
+    const APP_PASSWORD = "MegWillXP"; // tu peux le changer si tu veux
+
+    function unlock(){
+      document.getElementById("loginWrap").style.display = "none";
+      document.getElementById("app").style.display = "block";
+    }
+
+    function checkPwd(){
+      const v = document.getElementById("pwd").value || "";
+      const ok = v === APP_PASSWORD;
+      document.getElementById("loginErr").style.display = ok ? "none" : "block";
+      if(ok){
+        localStorage.setItem("megstudio_unlocked","1"); // garde l'accès sur cet appareil
+        unlock();
+      }
+    }
+
+    document.getElementById("pwd").addEventListener("keydown",(e)=>{
+      if(e.key === "Enter") checkPwd();
+    });
+
+    (function autoUnlock(){
+      if(localStorage.getItem("megstudio_unlocked")==="1"){
+        unlock();
+      }
+    })();
+
+    /* ===== DATA ===== */
+    const CHANNELS = {
+      meg: {
+        name: "TheLegendOf_Meg",
+        socials: "YouTube / Twitch / TikTok / Instagram : TheLegendOf_Meg",
+        cta: "💙 Abonne-toi pour la suite + like si ça t’aide !"
+      },
+      will: {
+        name: "WillXP83",
+        socials: "Twitch : willxp83 · TikTok : willxp91 · Facebook : WillXP",
+        cta: "🚀 Abonne-toi pour les prochaines vidéos !"
+      }
+    };
+
+    const PRESETS = {
+      letsplay: {
+        type: "Let’s Play",
+        tone: "Chill",
+        keywords: "gameplay fr, let's play fr, walkthrough fr, épisode, narration",
+        chapters: "00:00 Intro\n00:00 Début gameplay\n00:00 Exploration\n00:00 Moment clé\n00:00 Fin",
+        hashtags: "#Gaming #LetsPlay #Gameplay #Walkthrough #GamingFR"
+      },
+      syberia: {
+        type: "Let’s Play",
+        tone: "Narratif / immersif",
+        keywords: "Syberia Remastered, Kate Walker, narration, histoire, walkthrough fr, gameplay fr",
+        chapters: "00:00 Intro\n00:00 Histoire / contexte\n00:00 Exploration\n00:00 Puzzle\n00:00 Fin",
+        hashtags: "#SyberiaRemastered #Gaming #GameplayFR #Walkthrough #Narration"
+      },
+      soluce: {
+        type: "Soluce / Guide",
+        tone: "Clair & efficace",
+        keywords: "soluce, guide, solution, walkthrough fr, gameplay fr",
+        chapters: "00:00 Intro\n00:00 Étape 1\n00:00 Étape 2\n00:00 Étape 3\n00:00 Fin",
+        hashtags: "#Soluce #Guide #Walkthrough #GamingFR #Gameplay"
+      },
+      boss: {
+        type: "Boss Fight",
+        tone: "Énergique",
+        keywords: "boss fight, guide, tips, gameplay fr, walkthrough",
+        chapters: "00:00 Intro\n00:00 Début du combat\n00:00 Phase 2\n00:00 Fin / loot",
+        hashtags: "#BossFight #Gaming #Gameplay #Walkthrough #GamingFR"
+      }
+    };
+
+    function clean(s){ return (s||"").toString().trim().replace(/\s+/g," "); }
+
+    function splitKeywords(raw){
+      return (raw||"")
+        .split(/[\n,]/g)
+        .map(x=>clean(x))
+        .filter(Boolean);
+    }
+
+    function uniq(arr){
+      return Array.from(new Set(arr.filter(Boolean)));
+    }
+
+    function clamp500(csv){
+      if(csv.length<=500) return csv;
+      let cut = csv.slice(0,500);
+      const last = cut.lastIndexOf(", ");
+      if(last>80) cut = cut.slice(0,last);
+      return cut;
+    }
+
+    function applyPreset(){
+      const p = PRESETS[document.getElementById("preset").value];
+      if(!p) return;
+      if(!document.getElementById("keywords").value.trim()){
+        document.getElementById("keywords").value = p.keywords;
+      }
+      if(!document.getElementById("chapters").value.trim()){
+        document.getElementById("chapters").value = p.chapters;
+      }
+    }
+
+    function makeTitles(game, episode, goal){
+      const g = clean(game);
+      const e = clean(episode);
+      const gl = clean(goal);
+      const ep = e ? `#${e}` : "";
+      const t = [
+        `${g} FR ${ep} — ${gl || "Gameplay"}`.trim(),
+        `${g} Gameplay FR ${ep}`.trim(),
+        `${g} Walkthrough FR ${ep}`.trim(),
+        gl ? `${gl} | ${g} ${ep}`.trim() : `${g} ${ep}`.trim(),
+        `${g} ${ep} — On avance !`.trim(),
+        `${g} FR — ${gl || "Moment clé"}`.trim(),
+        `${g} ${ep} | ${gl || "Let’s Play"}`.trim(),
+        `${g} ${ep} (FR)`.trim(),
+        `${g} — ${gl || "Suite"}`.trim(),
+        `${g} ${ep} — ${gl || "Gameplay FR"}`.trim()
+      ];
+      return t.map(x=>"- "+x).join("\n");
+    }
+
+    function makeDesc(channelKey, presetKey, game, episode, goal, chapters, playlist, duration){
+      const ch = CHANNELS[channelKey];
+      const p = PRESETS[presetKey];
+      const g = clean(game);
+      const e = clean(episode);
+      const gl = clean(goal);
+      const ep = e ? ` (Épisode ${e})` : "";
+      const dur = clean(duration);
+      const chap = chapters && chapters.trim() ? chapters.trim() : p.chapters;
+
+      const hook = gl ? `🎮 ${g}${ep}\n🎯 Aujourd’hui : ${gl}` : `🎮 ${g}${ep}\nOn continue l’aventure !`;
+      const ctx = `Type : ${p.type} · Ton : ${p.tone}${dur ? ` · Durée : ${dur}` : ""}`;
+
+      const pl = playlist ? `📌 Playlist : ${playlist}` : `📌 Playlist : [LIEN_PLAYLIST]`;
+
+      return `${hook}\n\n${ctx}\n\n⏱️ Chapitres :\n${chap}\n\n${ch.cta}\n\n${pl}\n\n📲 Réseaux :\n${ch.socials}`;
+    }
+
+    function makeTags(game, keywords){
+      const g = clean(game);
+      const base = [
+        g,
+        `${g} gameplay`,
+        `${g} fr`,
+        "gameplay fr",
+        "walkthrough fr",
+        "let's play fr"
+      ].filter(Boolean);
+
+      const extra = splitKeywords(keywords);
+      return uniq(base.concat(extra)).join(", ");
+    }
+
+    function makePromptIA(channelKey, presetKey, game, episode, goal, keywords, chapters, duration){
+      const ch = CHANNELS[channelKey];
+      const p = PRESETS[presetKey];
+      const g = clean(game);
+      const e = clean(episode);
+      const gl = clean(goal);
+      const kw = splitKeywords(keywords).join(", ");
+      const chap = (chapters && chapters.trim()) ? chapters.trim() : "—";
+      const dur = clean(duration) || "—";
+
+      return `Tu es un expert SEO YouTube gaming FR. Génère un pack ULTRA PRO, naturel (pas putaclic).
+
+CONTRAINTES:
+- 10 titres (2 SEO safe, 4 accroche, 4 variations courtes)
+- 1 description YouTube longue (hook 2 lignes max + contexte + valeur + chapitres + CTA + réseaux)
+- 1 description courte (1000-1500 caractères)
+- Tags: une liste de tags pertinents + une version ≤ 500 caractères (séparés par virgules)
+- Hashtags: 8 à 15 max
+- Commentaire épinglé (CTA + question)
+- Si chapitres non fournis, propose une structure avec 00:00
+
+STYLE:
+- Type: ${p.type}
+- Ton: ${p.tone}
+
+INFOS:
+Chaîne: ${ch.name}
+Jeu: ${g}
+Épisode: ${e || "—"}
+Durée: ${dur}
+Objectif / moment clé: ${gl || "—"}
+Mots-clés bonus: ${kw || "—"}
+Chapitres fournis: ${chap}
+
+Réseaux (à inclure tel quel):
+${ch.socials}
+
+CTA (à inclure):
+${ch.cta}
+
+SORTIE: donne le résultat avec des sections claires:
+TITRES:
+DESCRIPTION LONGUE:
+DESCRIPTION COURTE:
+CHAPITRES:
+TAGS (liste):
+TAGS (≤500c):
+HASHTAGS:
+COMMENTAIRE ÉPINGLÉ:`;
+    }
+
+    function makeHashtags(presetKey, game){
+      const p = PRESETS[presetKey];
+      const g = clean(game).replace(/[^A-Za-z0-9À-ÿ ]+/g,"").trim();
+      const gTag = g ? "#"+g.split(" ").slice(0,3).join("") : "";
+      const base = p.hashtags + (gTag ? ` ${gTag}` : "");
+      return base.trim();
+    }
+
+    function makeShorts(channelKey, presetKey, game, goal){
+      const ch = CHANNELS[channelKey];
+      const p = PRESETS[presetKey];
+      const g = clean(game);
+      const gl = clean(goal);
+      const caption = gl ? `${g} — ${gl} ⚡` : `${g} — moment clé ⚡`;
+      return `${caption}\n\n${p.hashtags}\n\n${ch.socials}`;
+    }
+
+    async function copyId(id){
+      const el = document.getElementById(id);
+      const text = el ? (el.textContent || "") : "";
+      await navigator.clipboard.writeText(text);
+      const t = document.getElementById("toast");
+      t.style.display = "block";
+      setTimeout(()=>t.style.display="none", 900);
+    }
+
+    function saveForm(){
+      const data = {
+        channel: document.getElementById("channel").value,
+        preset: document.getElementById("preset").value,
+        game: document.getElementById("game").value,
+        episode: document.getElementById("episode").value,
+        goal: document.getElementById("goal").value,
+        keywords: document.getElementById("keywords").value,
+        chapters: document.getElementById("chapters").value,
+        playlist: document.getElementById("playlist").value,
+        duration: document.getElementById("duration").value
+      };
+      localStorage.setItem("megstudio_form", JSON.stringify(data));
+    }
+
+    function loadForm(){
+      const raw = localStorage.getItem("megstudio_form");
+      if(!raw) return;
+      try{
+        const d = JSON.parse(raw);
+        if(d.channel) document.getElementById("channel").value = d.channel;
+        if(d.preset) document.getElementById("preset").value = d.preset;
+        document.getElementById("game").value = d.game || "";
+        document.getElementById("episode").value = d.episode || "";
+        document.getElementById("goal").value = d.goal || "";
+        document.getElementById("keywords").value = d.keywords || "";
+        document.getElementById("chapters").value = d.chapters || "";
+        document.getElementById("playlist").value = d.playlist || "";
+        document.getElementById("duration").value = d.duration || "";
+      }catch(e){}
+    }
+
+    function generateAll(){
+      const channelKey = document.getElementById("channel").value;
+      const presetKey = document.getElementById("preset").value;
+
+      const game = document.getElementById("game").value;
+      const episode = document.getElementById("episode").value;
+      const goal = document.getElementById("goal").value;
+      const keywords = document.getElementById("keywords").value;
+      const chapters = document.getElementById("chapters").value;
+      const playlist = document.getElementById("playlist").value;
+      const duration = document.getElementById("duration").value;
+
+      if(!clean(game)){
+        alert("Mets au moins le nom du jeu 🙂");
+        return;
+      }
+
+      document.getElementById("promptOut").textContent =
+        makePromptIA(channelKey, presetKey, game, episode, goal, keywords, chapters, duration);
+
+      document.getElementById("titlesOut").textContent =
+        makeTitles(game, episode, goal);
+
+      document.getElementById("descOut").textContent =
+        makeDesc(channelKey, presetKey, game, episode, goal, chapters, playlist, duration);
+
+      const tags = makeTags(game, keywords);
+      document.getElementById("tagsOut").textContent = tags;
+      document.getElementById("tags500Out").textContent = clamp500(tags);
+
+      document.getElementById("hashtagsOut").textContent =
+        makeHashtags(presetKey, game);
+
+      document.getElementById("shortsOut").textContent =
+        makeShorts(channelKey, presetKey, game, goal);
+
+      saveForm();
+    }
+
+    // init
+    loadForm();
+    applyPreset();
+  </script>
 </body>
 </html>
