@@ -1,238 +1,852 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Meg Studio</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Optionnel : si tu upload icon.png à la racine -->
+  <link rel="icon" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
 
-<title>Meg Studio</title>
+  <style>
+    :root{
+      --bg:#070a14;
+      --panel:rgba(18,26,48,.78);
+      --panel2:rgba(15,22,44,.55);
+      --text:#eaf0ff;
+      --muted:rgba(234,240,255,.72);
+      --line:rgba(255,255,255,.10);
+      --accent:#4f7cff;
+      --accent2:#7aa3ff;
+      --ok:#2dd4bf;
+      --warn:#fbbf24;
+      --danger:#fb7185;
+      --shadow:0 22px 70px rgba(0,0,0,.55);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
 
-<style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1100px 720px at 18% 6%, rgba(79,124,255,.22), transparent 60%),
+        radial-gradient(900px 650px at 92% 18%, rgba(45,212,191,.14), transparent 58%),
+        radial-gradient(800px 700px at 45% 110%, rgba(251,113,133,.10), transparent 55%),
+        var(--bg);
+      min-height:100vh;
+      padding:18px;
+    }
 
-body{
-font-family:Arial, sans-serif;
-background:#0b1020;
-color:white;
-padding:40px;
-}
+    .wrap{max-width:1100px;margin:0 auto}
+    .topbar{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      padding:10px 6px 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      user-select:none;
+    }
+    .logo{
+      width:42px; height:42px; border-radius:14px;
+      background:linear-gradient(135deg, rgba(79,124,255,.95), rgba(122,163,255,.65));
+      display:grid; place-items:center;
+      font-weight:900;
+      box-shadow:0 12px 40px rgba(79,124,255,.25);
+    }
+    .titleblock h1{margin:0;font-size:20px;letter-spacing:.2px}
+    .titleblock .sub{margin-top:4px;font-size:12px;color:var(--muted)}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      backdrop-filter: blur(10px);
+    }
 
-.container{
-max-width:900px;
-margin:auto;
-}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width:980px){
+      .grid{grid-template-columns:1fr}
+    }
 
-h1{
-text-align:center;
-}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+    }
+    .cardHeader{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      background:rgba(0,0,0,.10);
+    }
+    .cardHeader h2{margin:0;font-size:14px;letter-spacing:.2px}
+    .cardBody{padding:14px}
 
-label{
-display:block;
-margin-top:20px;
-}
+    label{
+      display:block;
+      margin:12px 0 6px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(10,14,28,.55);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    textarea{min-height:110px; resize:vertical;}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    @media(max-width:560px){ .row{grid-template-columns:1fr;} }
 
-textarea,input,select{
-width:100%;
-padding:12px;
-margin-top:5px;
-background:#161b33;
-color:white;
-border:none;
-border-radius:8px;
-}
+    .btnRow{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top:12px;
+    }
+    button, .aBtn{
+      border:0;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    button.primary{background:var(--accent); border-color:rgba(79,124,255,.35)}
+    button.ghost{background:transparent}
+    button.danger{border-color:rgba(251,113,133,.35); background:rgba(251,113,133,.12)}
+    button.ok{border-color:rgba(45,212,191,.35); background:rgba(45,212,191,.12)}
+    button:hover, .aBtn:hover{filter:brightness(1.06)}
 
-button{
-margin-top:15px;
-padding:12px;
-background:#4f7cff;
-border:none;
-border-radius:10px;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
-button.secondary{
-background:#333a60;
-}
-
-.output{
-margin-top:25px;
-background:#161b33;
-padding:20px;
-border-radius:10px;
-white-space:pre-wrap;
-}
-
-</style>
-
+    .out{
+      margin-top:8px;
+      background:rgba(10,14,28,.52);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-size:13px;
+      line-height:1.35;
+    }
+    .out.mono{font-family:var(--mono)}
+    .mini{font-size:12px;color:var(--muted)}
+    .toast{
+      display:none;
+      margin-left:auto;
+      color:rgba(45,212,191,.95);
+      font-weight:900;
+      font-size:12px;
+    }
+    .countline{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+    }
+  </style>
 </head>
 
 <body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">M</div>
+      <div class="titleblock">
+        <h1>Meg Studio</h1>
+        <div class="sub">Tool SEO gaming — génération locale + prompt IA ULTRA PRO (résumé / transcript)</div>
+      </div>
+    </div>
+    <div class="pill" id="pillStatus">👤 Mode neutre</div>
+  </div>
 
-<div class="container">
+  <div class="grid">
 
-<h1>Meg Studio</h1>
+    <!-- LEFT: INPUTS -->
+    <div class="card">
+      <div class="cardHeader">
+        <h2>🎛️ Entrées</h2>
+        <div class="btnRow" style="margin:0">
+          <button class="ghost" type="button" onclick="loadForm()">Charger</button>
+          <button class="danger" type="button" onclick="clearForm()">Vider</button>
+          <button class="ok" type="button" onclick="saveForm()">Sauver</button>
+          <button class="primary" type="button" onclick="generateAll()">Générer</button>
+        </div>
+      </div>
 
-<label>Chaîne</label>
-<select id="channel">
+      <div class="cardBody">
 
-<option value="none">Aucune chaîne</option>
+        <div class="row">
+          <div>
+            <label>Chaîne</label>
+            <select id="channel" onchange="onProfileChange()">
+              <option value="none">Aucune chaîne (neutre)</option>
+              <option value="TheLegendOf_Meg">TheLegendOf_Meg</option>
+              <option value="WillXP">WillXP</option>
+            </select>
+          </div>
+          <div>
+            <label>Catégorie</label>
+            <select id="category" onchange="saveForm()">
+              <option value="letsplay">Let’s Play</option>
+              <option value="narratif">Narratif</option>
+              <option value="soluce">Soluce / Guide</option>
+              <option value="boss">Boss Fight</option>
+              <option value="horreur">Horreur</option>
+              <option value="libre">Libre</option>
+            </select>
+          </div>
+        </div>
 
-<option value="TheLegendOf_Meg">TheLegendOf_Meg</option>
+        <div class="row">
+          <div>
+            <label>Jeu</label>
+            <input id="game" placeholder="ex : Resident Evil Requiem / Zelda BOTW / Syberia Remastered" />
+          </div>
+          <div>
+            <label>Épisode (optionnel)</label>
+            <input id="episode" placeholder="ex : 04" />
+          </div>
+        </div>
 
-<option value="WillXP">WillXP</option>
+        <label>Objectif / moment clé</label>
+        <input id="goal" placeholder="ex : quitter le centre de soin / sauver Helena / résoudre l’énigme…" />
 
-</select>
+        <label>Mots-clés bonus (virgules ou lignes)</label>
+        <textarea id="keywords" placeholder="ex : walkthrough fr, gameplay fr, narration, soluce, survival horror…"></textarea>
 
-<label>Jeu</label>
-<input id="game" placeholder="ex : Resident Evil Requiem">
+        <label>Résumé rapide (2–10 lignes)</label>
+        <textarea id="summary" placeholder="Écris ce qui se passe dans la vidéo. Même 3 phrases suffisent."></textarea>
 
-<label>Objectif / moment clé</label>
-<input id="goal" placeholder="ex : sauver Helena">
+        <label>Transcript YouTube (optionnel)</label>
+        <textarea id="transcript" placeholder="Colle un transcript si tu l’as (même brut)."></textarea>
 
-<label>Résumé rapide</label>
-<textarea id="summary" placeholder="Résumé rapide de la vidéo"></textarea>
+        <label>Chapitres (optionnel) — une ligne par chapitre</label>
+        <textarea id="chapters" placeholder="00:00 Intro&#10;01:12 Début gameplay&#10;..."></textarea>
 
-<label>Transcript YouTube (optionnel)</label>
-<textarea id="transcript" placeholder="Colle ici le transcript si tu en as un"></textarea>
+        <div class="btnRow">
+          <button class="primary" type="button" onclick="generateAll()">✨ Générer</button>
+          <button type="button" onclick="copyId('promptOut')">📋 Copier prompt IA</button>
+          <a class="aBtn" href="https://chatgpt.com/" onclick="copyId('promptOut')" rel="noopener">🤖 Copier + ouvrir ChatGPT</a>
+        </div>
 
-<button onclick="generatePrompt()">Générer prompt IA</button>
+        <div class="mini" style="margin-top:10px;">
+          Tip : pour “Horreur” (RE, Phasmo…), mets 2–3 phrases dans Résumé → les titres seront beaucoup plus “ciné” et propres.
+        </div>
+      </div>
+    </div>
 
-<button class="secondary" onclick="copyPrompt()">Copier prompt</button>
+    <!-- RIGHT: OUTPUTS -->
+    <div class="card">
+      <div class="cardHeader">
+        <h2>🧾 Résultats</h2>
+        <div class="toast" id="toast">Copié ✅</div>
+      </div>
 
-<button class="secondary" onclick="openChatGPT()">Ouvrir ChatGPT</button>
+      <div class="cardBody">
 
-<div id="prompt" class="output"></div>
+        <div class="btnRow" style="margin-top:0">
+          <button type="button" onclick="copyId('titlesOut')">Copier titres</button>
+          <button type="button" onclick="copyId('descLongOut')">Copier desc longue</button>
+          <button type="button" onclick="copyId('descShortOut')">Copier desc courte</button>
+          <button type="button" onclick="copyId('chaptersOut')">Copier chapitres</button>
+          <button type="button" onclick="copyId('tagsOut')">Copier tags</button>
+          <button type="button" onclick="copyId('tags500Out')">Copier tags ≤500</button>
+          <button type="button" onclick="copyId('hashtagsOut')">Copier hashtags</button>
+          <button type="button" onclick="copyId('pinnedOut')">Copier commentaire</button>
+          <button class="ok" type="button" onclick="copyId('promptOut')">Copier prompt IA</button>
+        </div>
 
+        <label>Titres (10)</label>
+        <div id="titlesOut" class="out"></div>
+
+        <label>Description longue</label>
+        <div id="descLongOut" class="out"></div>
+
+        <label>Description courte</label>
+        <div id="descShortOut" class="out"></div>
+
+        <label>Chapitres</label>
+        <div id="chaptersOut" class="out"></div>
+
+        <label>Tags</label>
+        <div id="tagsOut" class="out"></div>
+
+        <div class="countline">
+          <span class="badge">Tags ≤ 500 : <b id="tags500Count">0</b> caractères</span>
+          <span class="mini">YouTube aime les tags propres, pas du spam.</span>
+        </div>
+        <div id="tags500Out" class="out"></div>
+
+        <label>Hashtags (8–15)</label>
+        <div id="hashtagsOut" class="out"></div>
+
+        <label>Commentaire épinglé</label>
+        <div id="pinnedOut" class="out"></div>
+
+        <label>Prompt IA ULTRA PRO (à coller dans ChatGPT)</label>
+        <div id="promptOut" class="out mono"></div>
+
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
+/* ======================
+   MEG STUDIO V5
+   ====================== */
 
-const profiles = {
+const PROFILES = {
+  none: {
+    displayName: "Aucune chaîne",
+    socials: [],
+    cta: "",
+    toneHint: ""
+  },
+  TheLegendOf_Meg: {
+    displayName: "TheLegendOf_Meg",
+    socials: ["YouTube / Twitch / TikTok / Instagram : TheLegendOf_Meg"],
+    cta: "Si la vidéo te plaît, abonne-toi et laisse un petit 👍 (ça aide énormément 💙).",
+    toneHint: "Chill"
+  },
+  WillXP: {
+    displayName: "WillXP",
+    socials: ["Twitch : willxp83", "TikTok : willxp91", "Facebook : WillXP"],
+    cta: "Si ça t’a plu, abonne-toi pour la suite et dis-moi ce que tu ferais à ma place 👇",
+    toneHint: "Dynamique / narratif"
+  }
+};
 
-none:{
-name:"",
-cta:"",
-socials:""
-},
+const CATEGORIES = {
+  letsplay: {
+    label: "Let’s Play",
+    tone: "Chill, naturel, progression",
+    hashtags: ["#gaming","#letsplay","#gameplay","#walkthrough","#gamingfr","#francais"],
+    tagSeeds: ["gameplay fr","let's play fr","walkthrough fr","gaming fr","jeu vidéo"]
+  },
+  narratif: {
+    label: "Narratif",
+    tone: "Immersif, cinématique, narration",
+    hashtags: ["#gaming","#narration","#histoire","#gameplayfr","#walkthrough","#francais"],
+    tagSeeds: ["narration","histoire","immersion","walkthrough fr","gameplay fr"]
+  },
+  soluce: {
+    label: "Soluce / Guide",
+    tone: "Clair, efficace, étape par étape",
+    hashtags: ["#soluce","#guide","#walkthrough","#gamingfr","#gameplay","#francais"],
+    tagSeeds: ["soluce","guide","solution","walkthrough fr","tutoriel","astuce"]
+  },
+  boss: {
+    label: "Boss Fight",
+    tone: "Rythmé, combat, stratégie",
+    hashtags: ["#bossfight","#gaming","#walkthrough","#gameplay","#gamingfr","#francais"],
+    tagSeeds: ["boss fight","combat","stratégie","tips","walkthrough fr","gameplay fr"]
+  },
+  horreur: {
+    label: "Horreur",
+    tone: "Tendu, cinématique, survival-horror (sobriété, pas putaclic)",
+    hashtags: ["#survivalhorror","#horror","#gaming","#gameplayfr","#walkthrough","#francais"],
+    tagSeeds: ["survival horror","horreur","tension","exploration","énigmes","gameplay fr","walkthrough fr"]
+  },
+  libre: {
+    label: "Libre",
+    tone: "Adaptatif selon le jeu",
+    hashtags: ["#gaming","#gameplay","#walkthrough","#gamingfr","#francais","#video"],
+    tagSeeds: ["gameplay fr","walkthrough fr","gaming fr"]
+  }
+};
 
-TheLegendOf_Meg:{
-name:"TheLegendOf_Meg",
-cta:"Si la vidéo te plaît abonne-toi et laisse un 👍",
-socials:"YouTube / Twitch / TikTok / Instagram : TheLegendOf_Meg"
-},
+function $(id){ return document.getElementById(id); }
 
-WillXP:{
-name:"WillXP",
-cta:"Abonne-toi pour la suite !",
-socials:"Twitch : willxp83 | TikTok : willxp91 | Facebook : WillXP"
+function clean(s){
+  return (s||"").toString().trim();
 }
 
+function splitKeywords(raw){
+  return (raw||"")
+    .split(/[\n,]/g)
+    .map(x=>clean(x))
+    .filter(Boolean);
 }
 
+function uniq(arr){
+  return Array.from(new Set((arr||[]).map(x=>clean(x)).filter(Boolean)));
+}
 
-function generatePrompt(){
+function clamp500(csv){
+  if(!csv) return "";
+  if(csv.length<=500) return csv;
+  let cut = csv.slice(0,500);
+  const last = cut.lastIndexOf(", ");
+  if(last>80) cut = cut.slice(0,last);
+  return cut;
+}
 
-const channel = document.getElementById("channel").value
+function showToast(){
+  const t = $("toast");
+  t.style.display = "inline";
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.style.display="none", 850);
+}
 
-const game = document.getElementById("game").value
+async function copyId(id){
+  const text = ($(id)?.textContent || "");
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+  showToast();
+}
 
-const goal = document.getElementById("goal").value
+/* ===== Profiles / status ===== */
+function onProfileChange(){
+  const profileKey = $("channel").value;
+  const catKey = $("category").value;
+  const p = PROFILES[profileKey] || PROFILES.none;
+  const c = CATEGORIES[catKey] || CATEGORIES.libre;
 
-const summary = document.getElementById("summary").value
+  const who = (profileKey==="none") ? "Mode neutre" : p.displayName;
+  $("pillStatus").textContent = `👤 ${who} • ${c.label}`;
+  saveForm();
+}
 
-const transcript = document.getElementById("transcript").value
+/* ===== Chapters ===== */
+function defaultChapters(catKey){
+  const c = CATEGORIES[catKey] || CATEGORIES.libre;
+  if(catKey==="soluce"){
+    return [
+      "00:00 Intro",
+      "00:00 Préparation",
+      "00:00 Étape 1",
+      "00:00 Étape 2",
+      "00:00 Solution finale",
+      "00:00 Conclusion"
+    ].join("\n");
+  }
+  if(catKey==="boss"){
+    return [
+      "00:00 Intro",
+      "00:00 Prépa / build",
+      "00:00 Début du boss",
+      "00:00 Phase 2",
+      "00:00 Finish",
+      "00:00 Conclusion"
+    ].join("\n");
+  }
+  if(catKey==="horreur"){
+    return [
+      "00:00 Intro",
+      "00:00 Exploration",
+      "00:00 Tension / rencontre",
+      "00:00 Objectif / énigme",
+      "00:00 Progression",
+      "00:00 Fin"
+    ].join("\n");
+  }
+  if(catKey==="narratif"){
+    return [
+      "00:00 Intro",
+      "00:00 Contexte / histoire",
+      "00:00 Exploration",
+      "00:00 Moment clé",
+      "00:00 Suite / tease",
+      "00:00 Conclusion"
+    ].join("\n");
+  }
+  return [
+    "00:00 Intro",
+    "00:00 Début gameplay",
+    "00:00 Exploration",
+    "00:00 Moment clé",
+    "00:00 Fin"
+  ].join("\n");
+}
 
-const profile = profiles[channel]
+function makeChapters(raw, catKey){
+  const ch = clean(raw);
+  return ch ? ch : defaultChapters(catKey);
+}
 
+/* ===== Local generation: titles ===== */
+function makeTitles(game, episode, goal, catKey){
+  const g = clean(game) || "Jeu";
+  const e = clean(episode);
+  const gl = clean(goal);
+  const c = CATEGORIES[catKey] || CATEGORIES.libre;
 
-const prompt = `Tu es un expert SEO YouTube gaming FR.
+  const epTxt = e ? `Épisode ${e}` : "";
+  const baseGoal = gl || (catKey==="soluce" ? "Solution complète" : "Moment clé");
+  const shortGame = g;
 
-Ta mission : produire un pack SEO ULTRA PRO basé sur le contenu réel de la vidéo.
+  // Ajustements “vibe” par catégorie
+  const mood =
+    catKey==="horreur" ? ["Ambiance lourde", "Tension", "On avance prudemment"] :
+    catKey==="boss" ? ["Strat", "Combat", "Phase décisive"] :
+    catKey==="soluce" ? ["Solution", "Guide", "Étapes"] :
+    catKey==="narratif" ? ["Histoire", "Décision", "Découverte"] :
+    ["Progression", "Suite", "On avance"];
+
+  const titles = [];
+
+  // 2 SEO safe
+  titles.push(`${shortGame} FR ${epTxt ? "– " + epTxt + " " : ""}| Walkthrough`);
+  titles.push(`${shortGame} ${epTxt ? "– " + epTxt + " " : ""}| ${baseGoal}`);
+
+  // 4 accroche sobres (pas putaclic)
+  titles.push(`${mood[0]}… ${shortGame}${epTxt ? " – " + epTxt : ""}`);
+  titles.push(`${baseGoal} dans ${shortGame}${epTxt ? " – " + epTxt : ""}`);
+  titles.push(`${mood[1]} • ${shortGame}${epTxt ? " – " + epTxt : ""}`);
+  titles.push(`${mood[2]} | ${shortGame}${epTxt ? " – " + epTxt : ""}`);
+
+  // 4 courtes
+  titles.push(`${shortGame} • ${baseGoal}`);
+  titles.push(`${shortGame} FR • ${epTxt || "Épisode"}`);
+  titles.push(`${baseGoal} | ${shortGame}`);
+  titles.push(`${shortGame} ${epTxt ? "– " + epTxt : ""}`);
+
+  return titles.map(t=>t.replace(/\s+/g," ").trim()).slice(0,10);
+}
+
+/* ===== Local generation: tags / hashtags ===== */
+function gameHashtag(game){
+  const g = clean(game);
+  if(!g) return "";
+  const slug = g.toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,26);
+  return slug ? "#"+slug : "";
+}
+
+function makeHashtags(game, catKey, kws){
+  const c = CATEGORIES[catKey] || CATEGORIES.libre;
+  const gTag = gameHashtag(game);
+  const kwTags = (kws||[])
+    .slice(0,6)
+    .map(k => "#"+k.toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,24))
+    .filter(Boolean);
+
+  let out = uniq([...c.hashtags, gTag, ...kwTags]).filter(Boolean);
+
+  // 8 à 15
+  if(out.length < 8){
+    out = uniq([...out, "#gaming", "#gameplay", "#walkthrough", "#francais", "#gamingfr"]);
+  }
+  return out.slice(0,15).join(" ");
+}
+
+function makeTags(game, catKey, kws){
+  const g = clean(game);
+  const c = CATEGORIES[catKey] || CATEGORIES.libre;
+
+  const base = [
+    g,
+    g ? `${g} gameplay` : "",
+    g ? `${g} fr` : "",
+    g ? `${g} walkthrough` : "",
+    "gameplay fr",
+    "walkthrough fr",
+    "gaming fr",
+    "jeu vidéo"
+  ];
+
+  const merged = uniq([...base, ...c.tagSeeds, ...(kws||[])]).filter(Boolean);
+  return merged.join(", ");
+}
+
+/* ===== Local generation: descriptions ===== */
+function makeDescriptions(profileKey, catKey, game, episode, goal, kws, chapters){
+  const p = PROFILES[profileKey] || PROFILES.none;
+  const c = CATEGORIES[catKey] || CATEGORIES.libre;
+
+  const g = clean(game) || "ce jeu";
+  const e = clean(episode);
+  const gl = clean(goal);
+
+  const epLine = e ? `🎮 ${g} — Épisode ${e}` : `🎮 ${g}`;
+  const goalLine = gl ? `🎯 Aujourd’hui : ${gl}` : "";
+  const kwLine = (kws && kws.length) ? `🔎 Mots-clés : ${kws.slice(0,10).join(", ")}` : "";
+
+  const hook =
+    gl ? `${gl} — on avance sur ${g}.\n${c.tone}` :
+         `On continue l’aventure sur ${g}.\n${c.tone}`;
+
+  const chapBlock = makeChapters(chapters, catKey);
+
+  const socials = (p.socials && p.socials.length)
+    ? ("📱 Réseaux :\n" + p.socials.map(s=>"• "+s).join("\n"))
+    : "";
+
+  const cta = p.cta ? p.cta : "";
+
+  const longDesc = [
+    hook,
+    "",
+    epLine,
+    goalLine,
+    "",
+    "✅ Au programme :",
+    (catKey==="soluce") ? "• solution claire étape par étape\n• un chemin simple (sans blabla)\n• chapitres propres"
+                        : "• progression\n• moments clés\n• chapitres propres",
+    "",
+    "🕒 Chapitres",
+    chapBlock,
+    "",
+    cta,
+    "",
+    socials,
+    "",
+    kwLine
+  ].filter(Boolean).join("\n").trim();
+
+  const shortDesc = [
+    (gl ? `${gl} — ` : "") + `${g}` + (e ? ` (Épisode ${e})` : ""),
+    "",
+    cta,
+    socials ? ("\n" + socials) : ""
+  ].filter(Boolean).join("\n").trim();
+
+  return { longDesc, shortDesc };
+}
+
+/* ===== Local generation: pinned comment ===== */
+function makePinned(profileKey, catKey, game, goal){
+  const p = PROFILES[profileKey] || PROFILES.none;
+  const g = clean(game) || "le jeu";
+  const gl = clean(goal);
+
+  const question =
+    gl ? `Question : toi, tu ferais quoi pour "${gl}" ?`
+       : `Question : tu veux la suite sur ${g} ?`;
+
+  const cta = p.cta ? p.cta : "Si ça t’aide, pense à t’abonner 👍";
+  return `${cta}\n\n${question}\n\n🗣️ Dis-moi ton conseil / ta théorie en commentaire 👇`;
+}
+
+/* ===== Prompt IA ULTRA PRO ===== */
+function makePromptIA(profileKey, catKey, game, episode, goal, kws, summary, transcript, chapters){
+  const p = PROFILES[profileKey] || PROFILES.none;
+  const c = CATEGORIES[catKey] || CATEGORIES.libre;
+
+  const g = clean(game) || "—";
+  const e = clean(episode) || "—";
+  const gl = clean(goal) || "—";
+  const kw = (kws && kws.length) ? kws.join(", ") : "—";
+  const sum = clean(summary) || "—";
+  const tr = clean(transcript) || "—";
+  const chap = makeChapters(chapters, catKey);
+
+  const socials = (p.socials && p.socials.length) ? p.socials.join("\n") : "—";
+  const cta = p.cta ? p.cta : "—";
+
+  return `Tu es un expert SEO YouTube gaming FR. Ta mission : produire un pack SEO ULTRA PRO, naturel (pas putaclic), basé sur le contenu réel (résumé/transcript).
 
 RÈGLES IMPORTANTES
+- Évite les majuscules inutiles, pas de spam emojis (max 2-3 sur toute la sortie).
+- Pas de drama fake, pas de “tu vas halluciner”.
+- Adapter le ton au jeu ET à la catégorie.
+- Si l’info manque, fais des hypothèses prudentes (sans inventer de faits précis).
+- Français naturel.
 
-- Style naturel, immersif et jamais putaclic
-- Pas de titres mensongers
-- Pas d'abus de majuscules
-- Maximum 2 ou 3 emojis dans toute la sortie
-- Adapter le ton au type de jeu (horreur, chill, narratif…)
+CATÉGORIE: ${c.label}
+TON: ${c.tone}
 
-À PRODUIRE
-
+À PRODUIRE (FORMAT OBLIGATOIRE)
 1) TITRES (10)
-- 2 SEO safe
-- 4 accroche sobres
-- 4 variations courtes
+- 2 SEO safe (propres, recherchables)
+- 4 accroche sobres (ciné, sans putaclic)
+- 4 variations courtes (≤ 55 caractères si possible)
 
 2) DESCRIPTION LONGUE
-- Hook 2 lignes maximum
-- contexte + valeur
-- chapitres
+- Hook 2 lignes max
+- Contexte + valeur
+- Chapitres (00:00 si pas fournis)
 - CTA + réseaux
 
-3) DESCRIPTION COURTE
+3) DESCRIPTION COURTE (1000–1500 caractères)
 
 4) CHAPITRES
+- Si transcript fourni: détecte 5–10 moments logiques.
+- Si pas de timecodes: mets 00:00 et ordonne en sections.
 
 5) TAGS
+- Liste complète pertinente + une version ≤ 500 caractères (virgules)
 
-6) TAGS ≤ 500 caractères
+6) HASHTAGS (8–15)
 
-7) HASHTAGS
+7) COMMENTAIRE ÉPINGLÉ
+- CTA + question engageante liée à l’épisode
 
-8) COMMENTAIRE ÉPINGLÉ
+INFOS
+Chaîne: ${p.displayName}
+Jeu: ${g}
+Épisode: ${e}
+Objectif / moment clé: ${gl}
 
+Mots-clés bonus:
+${kw}
 
-INFORMATIONS
+Résumé rapide:
+${sum}
 
-Chaîne : ${profile.name}
+Transcript:
+${tr}
 
-Jeu : ${game}
+Chapitres (si besoin de base):
+${chap}
 
-Objectif : ${goal}
+CTA (si chaîne choisie):
+${cta}
 
-Résumé de la vidéo :
-${summary}
+Réseaux (à inclure tel quel si dispo):
+${socials}
 
-Transcript :
-${transcript}
-
-CTA :
-${profile.cta}
-
-Réseaux :
-${profile.socials}
-
-Format de sortie clair avec sections.`
-
-
-document.getElementById("prompt").textContent = prompt
-
+SORTIE: respecte exactement les sections et mets des séparateurs clairs:
+TITRES:
+DESCRIPTION LONGUE:
+DESCRIPTION COURTE:
+CHAPITRES:
+TAGS (liste):
+TAGS (≤500c):
+HASHTAGS:
+COMMENTAIRE ÉPINGLÉ:`;
 }
 
-
-
-function copyPrompt(){
-
-const text = document.getElementById("prompt").textContent
-
-navigator.clipboard.writeText(text)
-
-alert("Prompt copié")
-
+/* ===== Save/Load ===== */
+function saveForm(){
+  const data = {
+    channel: $("channel").value,
+    category: $("category").value,
+    game: $("game").value,
+    episode: $("episode").value,
+    goal: $("goal").value,
+    keywords: $("keywords").value,
+    summary: $("summary").value,
+    transcript: $("transcript").value,
+    chapters: $("chapters").value
+  };
+  localStorage.setItem("megstudio_v5_form", JSON.stringify(data));
 }
 
-
-
-function openChatGPT(){
-
-window.open("https://chatgpt.com")
-
+function loadForm(){
+  const raw = localStorage.getItem("megstudio_v5_form");
+  if(!raw) { onProfileChange(); return; }
+  try{
+    const d = JSON.parse(raw);
+    if(d.channel) $("channel").value = d.channel;
+    if(d.category) $("category").value = d.category;
+    $("game").value = d.game || "";
+    $("episode").value = d.episode || "";
+    $("goal").value = d.goal || "";
+    $("keywords").value = d.keywords || "";
+    $("summary").value = d.summary || "";
+    $("transcript").value = d.transcript || "";
+    $("chapters").value = d.chapters || "";
+  }catch(e){}
+  onProfileChange();
 }
 
+function clearForm(){
+  if(!confirm("Tout vider ?")) return;
+  $("game").value = "";
+  $("episode").value = "";
+  $("goal").value = "";
+  $("keywords").value = "";
+  $("summary").value = "";
+  $("transcript").value = "";
+  $("chapters").value = "";
+  saveForm();
+  generateAll();
+}
+
+/* ===== Main ===== */
+function generateAll(){
+  const profileKey = $("channel").value;
+  const catKey = $("category").value;
+
+  const game = $("game").value;
+  const episode = $("episode").value;
+  const goal = $("goal").value;
+
+  const kws = splitKeywords($("keywords").value);
+  const summary = $("summary").value;
+  const transcript = $("transcript").value;
+  const chaptersRaw = $("chapters").value;
+
+  // Local outputs
+  const titles = makeTitles(game, episode, goal, catKey);
+  $("titlesOut").textContent = titles.map((t,i)=>`${i+1}. ${t}`).join("\n");
+
+  const desc = makeDescriptions(profileKey, catKey, game, episode, goal, kws, chaptersRaw);
+  $("descLongOut").textContent = desc.longDesc;
+  $("descShortOut").textContent = desc.shortDesc;
+
+  const ch = makeChapters(chaptersRaw, catKey);
+  $("chaptersOut").textContent = ch;
+
+  const tags = makeTags(game, catKey, kws);
+  $("tagsOut").textContent = tags;
+
+  const tags500 = clamp500(tags);
+  $("tags500Out").textContent = tags500;
+  $("tags500Count").textContent = String(tags500.length);
+
+  $("hashtagsOut").textContent = makeHashtags(game, catKey, kws);
+  $("pinnedOut").textContent = makePinned(profileKey, catKey, game, goal);
+
+  // Prompt IA
+  $("promptOut").textContent = makePromptIA(profileKey, catKey, game, episode, goal, kws, summary, transcript, chaptersRaw);
+
+  saveForm();
+}
+
+/* ===== Init ===== */
+(function init(){
+  loadForm();
+  generateAll();
+
+  // autosave
+  ["channel","category","game","episode","goal","keywords","summary","transcript","chapters"].forEach(id=>{
+    const el = $(id);
+    if(!el) return;
+    el.addEventListener("input", saveForm);
+    el.addEventListener("change", ()=>{ onProfileChange(); saveForm(); });
+  });
+})();
 </script>
-
 </body>
-
 </html>
