@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mega SEO Tool</title>
+
+<style>
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+background:#0f0f14;
+color:white;
+margin:0;
+padding:40px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input,select,textarea{
+width:100%;
+padding:10px;
+margin-bottom:15px;
+border-radius:8px;
+border:none;
+font-size:14px;
+}
+
+button{
+background:white;
+color:black;
+border:none;
+padding:12px 18px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.result{
+background:#1a1a22;
+padding:20px;
+border-radius:12px;
+margin-top:20px;
+}
+
+pre{
+white-space:pre-wrap;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>✨ Mega SEO Tool</h1>
+
+<label>Chaîne</label>
+<select id="channel">
+<option>TheLegendOf_Meg</option>
+<option>WillXP</option>
+</select>
+
+<label>Jeu</label>
+<input id="game" placeholder="ex : Syberia Remastered">
+
+<label>Episode</label>
+<input id="episode">
+
+<label>Objectif / moment clé</label>
+<input id="goal">
+
+<label>Mots clés</label>
+<textarea id="keywords"></textarea>
+
+<button onclick="generate()">🚀 Générer</button>
+
+<div class="result">
+
+<h3>Titres</h3>
+<pre id="titles"></pre>
+
+<h3>Description</h3>
+<pre id="description"></pre>
+
+<h3>Tags</h3>
+<pre id="tags"></pre>
+
+</div>
+
+</div>
+
+<script>
+
+function generate(){
+
+let game=document.getElementById("game").value
+let episode=document.getElementById("episode").value
+let goal=document.getElementById("goal").value
+let keywords=document.getElementById("keywords").value
+
+let titles=`
+${game} épisode ${episode}
+${game} gameplay FR épisode ${episode}
+${game} let's play épisode ${episode}
+${goal} | ${game}
+${game} walkthrough FR
+${game} moment clé épisode ${episode}
+${game} FR gameplay
+${game} partie ${episode}
+${game} découverte
+${game} gameplay complet
+`
+
+let description=`
+🎮 ${game} épisode ${episode}
+
+Objectif : ${goal}
+
+Bienvenue dans cet épisode de ${game} !
+
+Si la vidéo te plaît pense à t'abonner et à liker 👍
+
+📌 Playlist complète : [LIEN_PLAYLIST]
+
+`
+
+let tags=`
+${game},
+${game} gameplay,
+${game} fr,
+${game} walkthrough,
+${game} let's play,
+gameplay fr,
+walkthrough fr,
+let's play fr,
+jeux vidéo
+`
+
+document.getElementById("titles").textContent=titles
+document.getElementById("description").textContent=description
+document.getElementById("tags").textContent=tags
+
+}
+
+</script>
+
+</body>
+</html>
