@@ -28,15 +28,15 @@ width:100%;
 box-shadow:0 20px 60px rgba(0,0,0,0.6);
 }
 
-input, select{
-width:100%;
-padding:14px;
-border-radius:10px;
-border:none;
-margin-top:10px;
-margin-bottom:20px;
-background:#1f2a44;
-color:white;
+input, select, textarea{
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  border:none;
+  margin-top:10px;
+  margin-bottom:20px;
+  background:#1f2a44;
+  color:white;
 }
 
 button{
@@ -302,7 +302,178 @@ copyPrompt()
 window.open("https://chatgpt.com","_blank")
 
 }
+<script>
+// ====== V3: Profils + Presets + Copier + Tags<=500 + Sauvegarde ======
 
+const PROFILES = {
+  "TheLegendOf_Meg": {
+    displayName: "TheLegendOf_Meg",
+    socials: [
+      "YouTube / Twitch / TikTok / Instagram : TheLegendOf_Meg"
+    ],
+    cta: "Si la vidéo te plaît, abonne-toi et laisse un petit 👍 (ça aide énormément 💙).",
+    vibe: "Chill"
+  },
+  "WillXP": {
+    displayName: "WillXP",
+    socials: [
+      "Twitch : willxp83",
+      "TikTok : willxp91",
+      "Facebook : WillXP"
+    ],
+    cta: "Si ça t’a plu, abonne-toi pour la suite et dis-moi ce que tu ferais à ma place 👇",
+    vibe: "Narratif"
+  }
+};
+
+const PRESETS = {
+  "Let's Play (chill)": {
+    titleStyle: "Accroche",
+    hashtags: ["#gaming", "#letsplay", "#gameplay", "#walkthrough", "#francais", "#narration"],
+    chapters: ["Intro", "Début gameplay", "Exploration", "Moment clé", "Fin"]
+  },
+  "Soluce Sanctuaire (BOTW/TOTK)": {
+    titleStyle: "SEO safe",
+    hashtags: ["#zelda", "#botw", "#totk", "#sanctuaire", "#soluce", "#walkthrough"],
+    chapters: ["Départ", "Mécanique", "Solution", "Coffre", "Sortie"]
+  },
+  "Boss Fight": {
+    titleStyle: "Accroche",
+    hashtags: ["#bossfight", "#gaming", "#walkthrough", "#gameplay", "#fr"],
+    chapters: ["Setup", "Phase 1", "Phase 2", "Finish"]
+  }
+};
+
+// ---- Helpers
+function $(id){ return document.getElementById(id); }
+
+function cleanLines(s){
+  return (s || "").split("\n").map(l=>l.trim()).filter(Boolean).join("\n");
+}
+
+function uniq(arr){
+  return Array.from(new Set(arr.map(x=>x.trim()).filter(Boolean)));
+}
+
+function splitKeywords(raw){
+  if(!raw) return [];
+  // accepte virgules OU lignes
+  return raw
+    .split(/[\n,]/g)
+    .map(x=>x.trim())
+    .filter(Boolean);
+}
+
+function toTagList(tags){
+  return uniq(tags).join(", ");
+}
+
+function clamp500(str){
+  if(str.length <= 500) return str;
+  // coupe proprement au dernier ", "
+  let cut = str.slice(0, 500);
+  const lastComma = cut.lastIndexOf(", ");
+  if(lastComma > 50) cut = cut.slice(0, lastComma);
+  return cut;
+}
+
+function copyText(text){
+  navigator.clipboard.writeText(text);
+}
+
+// ---- UI wiring (ajoute ces IDs dans ton HTML si pas déjà)
+function ensureV3Ui(){
+  // Tags counters
+  if($("tags500Count")) return; // déjà
+  const tagsBox = $("tags");
+  if(!tagsBox) return;
+
+  const info = document.createElement("div");
+  info.style.opacity = "0.8";
+  info.style.marginTop = "-10px";
+  info.style.marginBottom = "20px";
+  info.innerHTML = `
+    <div>Tags ≤ 500 : <span id="tags500Count">0</span> caractères</div>
+  `;
+  tagsBox.parentElement.appendChild(info);
+
+  const btnRow = document.createElement("div");
+  btnRow.style.display = "flex";
+  btnRow.style.gap = "10px";
+  btnRow.style.flexWrap = "wrap";
+  btnRow.style.marginTop = "10px";
+  btnRow.innerHTML = `
+    <button id="copyTitlesBtn" type="button">Copier Titres</button>
+    <button id="copyDescBtn" type="button">Copier Description</button>
+    <button id="copyTagsBtn" type="button">Copier Tags</button>
+    <button id="copyHashBtn" type="button">Copier Hashtags</button>
+  `;
+  tagsBox.parentElement.appendChild(btnRow);
+
+  $("copyTitlesBtn").onclick = () => copyText($("titles").textContent || "");
+  $("copyDescBtn").onclick   = () => copyText($("description").textContent || "");
+  $("copyTagsBtn").onclick   = () => copyText($("tags").textContent || "");
+  $("copyHashBtn").onclick   = () => copyText($("hashtagsOut")?.textContent || "");
+}
+
+// ---- Save/Load (localStorage)
+function saveForm(){
+  const data = {
+    channel: $("channel")?.value || "",
+    preset: $("preset")?.value || "",
+    game: $("game")?.value || "",
+    episode: $("episode")?.value || "",
+    goal: $("goal")?.value || "",
+    keywords: $("keywords")?.value || "",
+    playlist: $("playlist")?.value || ""
+  };
+  localStorage.setItem("megStudioForm", JSON.stringify(data));
+}
+
+function loadForm(){
+  const raw = localStorage.getItem("megStudioForm");
+  if(!raw) return;
+  try{
+    const data = JSON.parse(raw);
+    if($("channel")) $("channel").value = data.channel || $("channel").value;
+    if($("preset")) $("preset").value = data.preset || $("preset").value;
+    if($("game")) $("game").value = data.game || "";
+    if($("episode")) $("episode").value = data.episode || "";
+    if($("goal")) $("goal").value = data.goal || "";
+    if($("keywords")) $("keywords").value = data.keywords || "";
+    if($("playlist")) $("playlist").value = data.playlist || "";
+  }catch(e){}
+}
+
+// ---- Main generate
+function generateV3(){
+  const channel = $("channel").value;
+  const presetKey = $("preset")?.value || "Let's Play (chill)";
+  const preset = PRESETS[presetKey] || PRESETS["Let's Play (chill)"];
+
+  const profile = PROFILES[channel] || PROFILES["TheLegendOf_Meg"];
+
+  const game = ($("game").value || "").trim();
+  const episode = ($("episode").value || "").trim();
+  const goal = ($("goal").value || "").trim();
+  const playlist = ($("playlist")?.value || "").trim();
+
+  const kws = splitKeywords($("keywords")?.value || "");
+
+  // ---- TITLES (simple mais efficaces sans IA)
+  const base = game ? game : "Jeu";
+  const epTxt = episode ? `Épisode ${episode}` : "Épisode";
+  const goalTxt = goal ? goal : "moment clé";
+
+  const titles = [
+    `${base} – ${epTxt} | ${goalTxt}`,
+    `${base} FR – ${epTxt} | Walkthrough`,
+    `${goalTxt}… on tente tout (${base})`,
+    `Ça bascule ici… ${base} | ${epTxt}`,
+    `${base} | ${goalTxt} (FR)`,
+    `${base} – ${epTxt} (chill)`,
+    `${base} – ${goalTxt}`,
+    `${base} FR | ${epTxt}`
 </script>
 
 </body>
